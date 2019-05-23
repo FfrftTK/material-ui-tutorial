@@ -64,6 +64,9 @@ class Board extends React.Component<{}, BoardState> {
 
   handleClick(i: number) {
     const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       squares,
@@ -81,7 +84,13 @@ class Board extends React.Component<{}, BoardState> {
   }
 
   render() {
-    const status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = `Winner: ${winner}`;
+    } else {
+      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+    }
     return (
       <div>
         <div className="status">{status}</div>
@@ -105,7 +114,23 @@ class Board extends React.Component<{}, BoardState> {
   }
 }
 
-class Game extends React.Component {
+interface HistoryData {
+  squares: ('O' | 'X' | null)[];
+}
+interface GameState {
+  history: HistoryData[];
+  xIsNext: boolean;
+  stepNumber: number;
+}
+class Game extends React.Component<{}, GameState> {
+  constructor() {
+    super({});
+    this.state = {
+      history: [{ squares: Array(9).fill(null) }],
+      xIsNext: true,
+      stepNumber: 0,
+    };
+  }
   render() {
     return (
       <div className="game">
@@ -121,30 +146,30 @@ class Game extends React.Component {
   }
 }
 
-// const calculateWinner: React.FC<Board> = (squares: BoardState) => {
-//   const lines = [
-//     [0, 1, 2],
-//     [3, 4, 5],
-//     [6, 7, 8],
-//     [0, 3, 6],
-//     [1, 4, 7],
-//     [2, 5, 8],
-//     [0, 4, 8],
-//     [2, 4, 6],
-//   ];
+const calculateWinner = (squares: SquareType[]) => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
 
-//   for (const x: number[] in lines) {
-//     const [a, b, c] = x;
-//     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-//       return squares[a];
-//     }
-//   }
-//   return null;
-// };
+  for (const x of lines) {
+    const [a, b, c] = x;
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+};
 
-// interface GameProps {
-//   value: Board;
-// }
+interface GameProps {
+  value: Board;
+}
 
 // const Game: React.FC<GameProps> = props => {
 //   return (
