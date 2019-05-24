@@ -1,54 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import './style.css';
-import { render } from 'react-dom';
+import Board from './Board';
 
 type SquareType = 'X' | 'O' | null;
-
-interface SquareProps {
-  value: SquareType;
-  onClick: () => void;
-}
-
-const Square: React.FC<SquareProps> = props => {
-  return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-};
-
-interface BoardProps {
-  squares: SquareType[];
-  onClick: (i: number) => void;
-}
-
-const Board: React.FC<BoardProps> = props => {
-  console.log(props);
-  const renderSquare = (i: number) => {
-    return <Square value={props.squares[i]} onClick={() => props.onClick(i)} />;
-  };
-  return (
-    <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
-    </div>
-  );
-};
 
 interface HistoryData {
   squares: SquareType[];
